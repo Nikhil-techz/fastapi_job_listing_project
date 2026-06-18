@@ -9,10 +9,11 @@ class Users(Base):
     name = Column(String,nullable=False)
     email = Column(String,unique= True, index=True, nullable=False)
     password = Column(String,nullable=False) 
+    role = Column(String,nullable=False) 
     
     applications = relationship("Application",back_populates="user",cascade="all,delete")  
 
-
+    job = relationship("Jobs",back_populates="recruiter",cascade="all, delete") 
     
     
 

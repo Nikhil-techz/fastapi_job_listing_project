@@ -1,11 +1,17 @@
 from pydantic import BaseModel
 from typing import Optional
-
+from datetime import datetime
 
 class JobBase(BaseModel):
     title: str
-    description: Optional[str] = None
+    description: str
     company: str
+    location:str
+    salary:int
+    experience_level:int
+    skills:str
+
+
 
 
 class JobCreate(JobBase):
@@ -16,9 +22,16 @@ class JobUpdate(BaseModel):
     title: Optional[str] = None
     description: Optional[str] = None
     company: Optional[str] = None
+    location:Optional[str] = None
+    salary: Optional[int] = None 
+    experience_level:Optional[int] = None
+    skills:Optional[str] = None
+
 
 
 class JobResponse(JobBase):
     id: int
+    is_active:bool
+    created_at:datetime
 
     model_config = {"from_attributes": True}  
