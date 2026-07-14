@@ -206,6 +206,12 @@ function App() {
     }
   }
 
+  function handleLogout() {
+    setToken('');
+    setProfile(null);
+    setStatus({ type: 'success', message: 'Logged out successfully.' });
+  }
+
   async function handleSaveJob(event) {
     event.preventDefault();
     const payload = {
@@ -271,10 +277,7 @@ function App() {
       <header className="site-header">
         <button className="brand" onClick={() => setAudience('seeker')}>
           <span className="brand-mark">J</span>
-          <span>
-            JobBoard
-            {audience === 'employer' && <small>for employers</small>}
-          </span>
+          <span>JobSphere</span>
         </button>
 
         <nav className="audience-tabs" aria-label="Audience">
@@ -292,9 +295,9 @@ function App() {
         <div className="header-actions">
           {profile ? (
             <div className="session-pill">
-              <span>{profile.email}</span>
+              <span>{profile.name || profile.email}</span>
               <strong>{profile.role}</strong>
-              <button onClick={() => setToken('')} title="Logout">
+              <button onClick={handleLogout} title="Logout">
                 <LogOut size={18} />
               </button>
             </div>
@@ -394,10 +397,28 @@ function JobSeekerView({
   setQuery,
   status,
 }) {
+  const [searchSubmitting, setSearchSubmitting] = useState(false);
+
+  async function handleSearch(event) {
+    event.preventDefault();
+    setSearchSubmitting(true);
+
+    try {
+      await Promise.all([
+        onLoadJobs(),
+        new Promise((resolve) => setTimeout(resolve, 600)),
+      ]);
+    } finally {
+      setSearchSubmitting(false);
+    }
+  }
+
+  const isSearching = loading || searchSubmitting;
+
   return (
     <>
       <section className="seeker-hero">
-        <div className="job-search-bar">
+        <form className={`job-search-bar ${isSearching ? 'searching' : ''}`} onSubmit={handleSearch}>
           <label>
             <Search size={24} />
             <input
@@ -415,14 +436,14 @@ function JobSeekerView({
               placeholder="City, state, or remote"
             />
           </label>
-          <button onClick={onLoadJobs}>
-            {loading ? <RefreshCw size={20} className="spin" /> : <Search size={20} />}
-            Find jobs
+          <button type="submit" disabled={isSearching} aria-busy={isSearching}>
+            {isSearching ? <RefreshCw size={20} className="spin" /> : <Search size={20} />}
+            {isSearching ? 'Searching...' : 'Find jobs'}
           </button>
-        </div>
+        </form>
 
         <div className="seeker-title">
-          <div className="wordmark">JobBoard</div>
+          <div className="wordmark">JobSphere</div>
           <h1>Your next job starts here</h1>
           <p>Create an account or sign in to see jobs that match your profile.</p>
           {!isLoggedIn && (
@@ -520,7 +541,7 @@ function EmployerView({
     <>
       <section className="employer-hero">
         <div className="employer-copy">
-          <p className="eyebrow">JobBoard for employers</p>
+          <p className="eyebrow">JobSphere for employers</p>
           <h1>Let's hire your next great candidate. Fast.</h1>
           <p>No matter the skills, experience, or qualifications you need, post roles and manage them here.</p>
           <button className="warm-button" onClick={isRecruiter ? undefined : onOpenRegister}>

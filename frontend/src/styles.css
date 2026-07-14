@@ -295,7 +295,28 @@ button:disabled {
   justify-content: center;
   min-height: 62px;
   padding: 0 26px;
+  transition: background 160ms ease, box-shadow 160ms ease, transform 160ms ease;
   white-space: nowrap;
+}
+
+.job-search-bar button:hover:not(:disabled) {
+  background: #0847ad;
+  box-shadow: 0 8px 18px rgba(11, 87, 208, 0.3);
+  transform: translateY(-1px);
+}
+
+.job-search-bar button:active:not(:disabled) {
+  transform: translateY(1px) scale(0.98);
+}
+
+.job-search-bar button:disabled {
+  cursor: wait;
+  opacity: 0.82;
+}
+
+.job-search-bar.searching {
+  border-color: #0b57d0;
+  box-shadow: 0 8px 24px rgba(11, 87, 208, 0.22);
 }
 
 .seeker-title {
