@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from database.db import engine, Base
-from Routes import user,auth,jobs
+from Routes import user,auth,jobs,application
 import database.base 
 
 
@@ -23,8 +23,10 @@ Base.metadata.create_all(bind=engine)
 app.include_router(user.router,prefix="/users",tags=["Users"])
 app.include_router(auth.router,prefix="/auth",tags=["Auth"]) 
 app.include_router(jobs.router)
+app.include_router(application.router) 
 
 @app.get("/")
 def home():
     return {"message": "Job listing app is running "} 
+
 

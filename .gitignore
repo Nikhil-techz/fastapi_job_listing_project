@@ -1,2 +1,24 @@
 .env
 *.log
+# Python
+__pycache__/
+*.py[cod]
+*.pyc
+
+# Virtual environment
+.venv/
+venv/
+
+# Environment variables
+.env
+
+# Node.js
+frontend/node_modules/
+
+# Build folders
+frontend/dist/
+
+# VS Code
+.vscode/
+
+# macOS
