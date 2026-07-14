@@ -14,6 +14,11 @@ class Users(Base):
     applications = relationship("Application",back_populates="user",cascade="all,delete")  
 
     job = relationship("Jobs",back_populates="recruiter",cascade="all, delete") 
+    applicant_profile = relationship("ApplicantProfile",back_populates="user",uselist=False,cascade="all, delete-orphan",
+)
+
+    recruiter_profile = relationship("RecruiterProfile",back_populates="user",uselist=False,cascade="all, delete-orphan",)
+    
     
     
 
