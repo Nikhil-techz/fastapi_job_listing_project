@@ -5,6 +5,7 @@ from typing import Optional
 class UserRole(str,Enum):
     applicant = "applicant"
     recruiter = "recruiter"
+    
 class UserBase(BaseModel):
     name: str
     email: EmailStr
