@@ -34,6 +34,7 @@ def login(login_data:UserLogin,db:Session = Depends(get_db)):
 def profile(current_user = Depends(get_current_user)):
     return {
         "id":current_user.id,
+        "name":current_user.name,
         "email":current_user.email,
         "role":current_user.role
     }

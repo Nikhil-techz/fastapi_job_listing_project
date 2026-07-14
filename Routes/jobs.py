@@ -79,3 +79,4 @@ def delete_jobs(job_id:int,db:Session = Depends(get_db),current_user = Depends(g
     delete_job.is_active = False
     db.commit()
     return {"message": "Job Deleted Successfully"} 
+ 
