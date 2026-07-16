@@ -28,10 +28,17 @@ class JobUpdate(BaseModel):
     skills:Optional[str] = None
 
 
+class FeatureJob(BaseModel):
+    is_featured: bool
+    featured_until: datetime | None = None
+    featured_priority: int = 0
 
 class JobResponse(JobBase):
     id: int
     is_active:bool
     created_at:datetime
+    is_featured: bool
+    featured_until: datetime | None = None
+    featured_priority: int
 
     model_config = {"from_attributes": True}  

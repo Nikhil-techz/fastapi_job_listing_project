@@ -3,8 +3,9 @@ from typing import List
 from dependencies.auth_dependency import get_current_user
 from sqlalchemy.orm import Session 
 from models.jobs import Jobs
-from schemas.job import JobCreate,JobResponse,JobUpdate
+from schemas.job import JobCreate,JobResponse,JobUpdate,FeatureJob
 from database.dependency import get_db
+from datetime import datetime
 
 router = APIRouter(prefix="/jobs",tags=["Jobs"])
 
@@ -64,7 +65,34 @@ def update_jobs(job_id:int, job_data:JobUpdate,db:Session = Depends(get_db),curr
     db.commit()
     db.refresh(update_jobs)
     return update_jobs 
+
+@router.patch("/jobs/{job_id}/feature",response_model = JobResponse)
+def featured_jobs(job_id:int,job_data:FeatureJob,db:Session = Depends(get_db),current_user = Depends(get_current_user)):
+    if current_user.role != "recruiter":
+        raise HTTPException(status_code = 403,detail = "Only Recruiter Can Featured Jobs.")
+    job = (db.query(Jobs).filter(Jobs.id == job_id, Jobs.is_active == True).first())
+    if not job:
+        raise HTTPException(status_code  = 404, detail = f"job with {job_id} not found.")
+    if job.recruiter_id != current_user.id:
+        raise HTTPException(status_code = 403, detail = "You are not authorized to feature this job.")
+    job.is_featured = job_data.is_featured
+    job.featured_until = job_data.featured_until
+    job.featured_priority = job_data.featured_priority
+    db.commit()
+    db.refresh(job)
+    return job
     
+@router.get("/jobs/featured", response_model=list[JobResponse])
+def get_featured_jobs(db: Session = Depends(get_db),current_user = Depends(get_current_user)):
+    featured_job = (db.query(Jobs).filter(
+        Jobs.is_active == True,Jobs.is_featured == True,
+        Jobs.featured_until>=datetime.utcnow())
+        .order_by(Jobs.featured_priority.desc())
+        .limit(10)
+        .all()
+        ) 
+    
+    return featured_job 
 
 
 @router.delete("/{job_id}") 

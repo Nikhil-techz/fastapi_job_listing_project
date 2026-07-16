@@ -17,6 +17,9 @@ class Jobs(Base):
     is_active = Column(Boolean,default = True)
     created_at = Column(DateTime,default = datetime.utcnow)
     recruiter_id = Column(Integer,ForeignKey("users.id"),nullable=False)
+    is_featured = Column(Boolean, default=False)
+    featured_until = Column(DateTime, nullable=True)
+    featured_priority = Column(Integer, default=0)
     
     applications = relationship("Application",back_populates="job",cascade="all,delete") 
     recruiter = relationship("Users",back_populates = "job")
