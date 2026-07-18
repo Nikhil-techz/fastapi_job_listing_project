@@ -16,6 +16,8 @@ class ApplicantProfile(Base):
     linkedin = Column(String)
     github = Column(String)
     profile_picture = Column(String, nullable=True) 
+    resume_url = Column(String, nullable=True)
+    resume_public_id = Column(String, nullable=True)
 
     user = relationship("Users", back_populates="applicant_profile") 
 
